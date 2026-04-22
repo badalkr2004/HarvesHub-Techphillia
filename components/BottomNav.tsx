@@ -50,7 +50,7 @@ export function BottomNav() {
       label: "Market",
       icon: Store,
       show: true,
-      match: (p) =>
+      match: (p: string) =>
         p.startsWith("/marketplace") ||
         (p.startsWith("/listings/") && !p.startsWith("/listings/new")),
     },
@@ -59,14 +59,14 @@ export function BottomNav() {
       label: "Dashboard",
       icon: LayoutDashboard,
       show: isFarmer,
-      match: (p) => p.startsWith("/dashboard"),
+      match: (p: string) => p.startsWith("/dashboard"),
     },
     {
       href: "/listings/new",
       label: "Sell",
       icon: PlusCircle,
       show: isFarmer,
-      match: (p) => p.startsWith("/listings/new"),
+      match: (p: string) => p.startsWith("/listings/new"),
     },
   ].filter((i) => i.show);
 
