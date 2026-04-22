@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Navbar } from "@/components/Navbar";
+import { MobileAppBar } from "@/components/MobileAppBar";
+import { BottomNav } from "@/components/BottomNav";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = authClient.useSession();
@@ -30,8 +32,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
+      <MobileAppBar />
       <Navbar />
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">{children}</main>
+      <main className="mx-auto max-w-7xl px-4 py-4 pb-bottom-nav sm:px-6 sm:py-6 md:pb-6">
+        {children}
+      </main>
+      <BottomNav />
     </div>
   );
 }

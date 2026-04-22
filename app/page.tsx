@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { Sprout, ArrowRight, BarChart3, Zap, Shield } from "lucide-react";
+import { PublicMobileTopBar, PublicBottomNav } from "@/components/PublicMobileNav";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navbar */}
-      <header className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
+    <div className="min-h-screen bg-background pb-bottom-nav md:pb-0">
+      {/* Mobile native top app bar */}
+      <PublicMobileTopBar />
+
+      {/* Desktop Navbar (unchanged) */}
+      <header className="hidden border-b bg-background/80 backdrop-blur-md sticky top-0 z-50 md:block">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
             <Sprout className="h-6 w-6 text-primary" />
@@ -29,7 +33,7 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-20 pb-16 md:pt-28 md:pb-24">
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-12 md:pt-28 md:pb-24">
         <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center rounded-full border bg-muted/50 px-4 py-1.5 text-sm font-medium text-muted-foreground mb-6">
             <span className="mr-2">🌾</span>
@@ -100,8 +104,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t">
+      {/* Footer (hidden on mobile since bottom nav takes its role) */}
+      <footer className="hidden border-t md:block">
         <div className="mx-auto max-w-6xl flex items-center justify-between px-4 sm:px-6 py-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Sprout className="h-4 w-4" />
@@ -112,6 +116,9 @@ export default function Home() {
           </p>
         </div>
       </footer>
+
+      {/* Mobile native bottom navigation */}
+      <PublicBottomNav />
     </div>
   );
 }

@@ -124,5 +124,30 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Prevent iOS input zoom-in (inputs must be >=16px on mobile) */
+  @media (max-width: 767px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
+  }
+}
+
+@layer utilities {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-pb {
+    padding-bottom: calc(env(safe-area-inset-bottom) + var(--safe-pb-extra, 0px));
+  }
+  .pb-bottom-nav {
+    /* space for fixed bottom nav on mobile (h-16 = 4rem) + safe area */
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
   }
 }
