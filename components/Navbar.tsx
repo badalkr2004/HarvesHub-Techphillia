@@ -22,6 +22,7 @@ export function Navbar() {
 
   const links = [
     { href: "/marketplace", label: "Marketplace", icon: Store, show: true },
+    { href: "/markets", label: "Markets", icon: Store, show: true },
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, show: isFarmer },
     { href: "/listings/new", label: "New Listing", icon: PlusCircle, show: isFarmer },
   ];

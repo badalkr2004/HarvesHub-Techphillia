@@ -55,6 +55,13 @@ export function BottomNav() {
         (p.startsWith("/listings/") && !p.startsWith("/listings/new")),
     },
     {
+      href: "/markets",
+      label: "Markets",
+      icon: Store,
+      show: true,
+      match: (p: string) => p.startsWith("/markets"),
+    },
+    {
       href: "/dashboard",
       label: "Dashboard",
       icon: LayoutDashboard,
