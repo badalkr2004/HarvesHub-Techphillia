@@ -1,19 +1,34 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  integer,
+  real,
+  index,
+} from "drizzle-orm/pg-core";
 
+// ─── Users (Better Auth managed + extended) ─────────────────────────────────
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
+  role: text("role", { enum: ["farmer", "buyer"] })
+    .default("buyer")
+    .notNull(),
+  location: text("location"),
+  verified: boolean("verified").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .$onUpdate(() => new Date())
     .notNull(),
 });
 
+// ─── Sessions (Better Auth standard) ────────────────────────────────────────
 export const session = pgTable(
   "session",
   {
@@ -22,7 +37,7 @@ export const session = pgTable(
     token: text("token").notNull().unique(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
-      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .$onUpdate(() => new Date())
       .notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
@@ -30,9 +45,10 @@ export const session = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
   },
-  (table) => [index("session_userId_idx").on(table.userId)],
+  (table) => [index("session_userId_idx").on(table.userId)]
 );
 
+// ─── Accounts (Better Auth standard) ────────────────────────────────────────
 export const account = pgTable(
   "account",
   {
@@ -51,12 +67,13 @@ export const account = pgTable(
     password: text("password"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
-      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .$onUpdate(() => new Date())
       .notNull(),
   },
-  (table) => [index("account_userId_idx").on(table.userId)],
+  (table) => [index("account_userId_idx").on(table.userId)]
 );
 
+// ─── Verification (Better Auth standard) ────────────────────────────────────
 export const verification = pgTable(
   "verification",
   {
@@ -67,15 +84,43 @@ export const verification = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
-      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .$onUpdate(() => new Date())
       .notNull(),
   },
-  (table) => [index("verification_identifier_idx").on(table.identifier)],
+  (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
 
+// ─── Listings ───────────────────────────────────────────────────────────────
+export const listing = pgTable(
+  "listing",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    sellerId: text("seller_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    crop: text("crop").notNull(),
+    variety: text("variety"),
+    quantityQuintals: real("quantity_quintals").notNull(),
+    pricePerQuintal: real("price_per_quintal").notNull(),
+    description: text("description"),
+    location: text("location"),
+    isActive: boolean("is_active").default(true).notNull(),
+    views: integer("views").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("listing_sellerId_idx").on(table.sellerId),
+    index("listing_crop_idx").on(table.crop),
+  ]
+);
+
+// ─── Relations ──────────────────────────────────────────────────────────────
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  listings: many(listing),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -88,6 +133,13 @@ export const sessionRelations = relations(session, ({ one }) => ({
 export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
+    references: [user.id],
+  }),
+}));
+
+export const listingRelations = relations(listing, ({ one }) => ({
+  seller: one(user, {
+    fields: [listing.sellerId],
     references: [user.id],
   }),
 }));
