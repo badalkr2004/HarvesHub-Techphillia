@@ -4,7 +4,8 @@
  * Base URL defaults to http://localhost:8000 (the backend dev server).
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_FORECAST_API_URL ?? "http://localhost:8000";
+const API_BASE =
+  process.env.FORECAST_API_URL ?? "https://ae0b-47-31-110-223.ngrok-free.app";
 
 // ---------------------------------------------------------------------------
 // Types
